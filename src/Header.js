@@ -8,9 +8,7 @@ axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
 class Header extends Component {
-    state = {
-      buttonDisplay: "none"
-    };
+    state = {buttonDisplay: "none"};
   
     componentDidMount() {
       if ($.cookie("login_id")) {
@@ -25,11 +23,7 @@ class Header extends Component {
     }
   
     logout = () => {
-      axios
-        .get("http://localhost:8080/member/logout", {
-          headers
-        })
-        .then(returnData => {
+      axios.get("http://localhost:8080/member/logout", {headers}).then(returnData => {
           if (returnData.data.message) {
             $.removeCookie("login_id");
             alert("로그아웃 되었습니다!");
@@ -52,18 +46,12 @@ class Header extends Component {
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
               <NavLink to="/">
-                <Button style={buttonStyle} variant="primary">
-                  글목록
-                </Button>
+                <Button style={buttonStyle} variant="primary">글목록</Button>
               </NavLink>
               <NavLink to="/boardWrite">
-                <Button style={buttonStyle} variant="primary">
-                  글쓰기
-                </Button>
+                <Button style={buttonStyle} variant="primary">글쓰기</Button>
               </NavLink>
-              <Button style={buttonStyle} onClick={this.logout} variant="primary">
-                로그아웃
-              </Button>
+              <Button style={buttonStyle} onClick={this.logout} variant="primary">로그아웃</Button>
             </Navbar.Collapse>
           </Navbar>
           <Image src="./img/main.png" fluid />

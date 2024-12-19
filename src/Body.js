@@ -9,7 +9,7 @@ import $ from "jquery";
 import {} from "jquery.cookie";
 
 class Body extends Component {
-    // 렌더링
+  // 렌더링
   render() {
     let resultForm;
     function getResultForm() {
@@ -23,6 +23,7 @@ class Body extends Component {
       }
     }
     getResultForm();
+
     // UI 리턴
     return (
       <div>
