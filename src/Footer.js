@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component} from "react";
 
 class Footer extends Component{
     render(){
@@ -6,5 +6,4 @@ class Footer extends Component{
     }
 }
 
-// 다른 곳에서 import 할 수 있게끔 밖으로 내보내는 export
 export default Footer;
