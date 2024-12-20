@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import $ from "jquery";
@@ -10,15 +8,40 @@ const headers = { withCredentials: true };
 const BoardWriteForm = ({ location }) => {
   const [data, setData] = useState("");
   const boardTitleRef = useRef();
+  const editorRef = useRef();
 
   useEffect(() => {
+    // 제목 및 내용 초기화
     if (location?.state?.title) {
       boardTitleRef.current.value = location.state.title;
     }
-
     if (location?.state?.content) {
       setData(location.state.content);
     }
+
+    // CKEditor 초기화
+    const loadEditor = async () => {
+      const ClassicEditor = await window.ClassicEditor.create(document.querySelector("#editor"));
+      editorRef.current = ClassicEditor;
+
+      // 이전 데이터 로드
+      if (location?.state?.content) {
+        ClassicEditor.setData(location.state.content);
+      }
+
+      ClassicEditor.model.document.on("change:data", () => {
+        setData(ClassicEditor.getData());
+      });
+    };
+
+    loadEditor();
+
+    // 컴포넌트 언마운트 시 에디터 파괴
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.destroy();
+      }
+    };
   }, [location]);
 
   const writeBoard = () => {
@@ -72,10 +95,6 @@ const BoardWriteForm = ({ location }) => {
       });
   };
 
-  const onEditorChange = (evt) => {
-    setData(evt.editor.getData());
-  };
-
   const divStyle = { margin: 50 };
   const titleStyle = { marginBottom: 5 };
   const buttonStyle = { marginTop: 5 };
@@ -89,11 +108,7 @@ const BoardWriteForm = ({ location }) => {
         placeholder="글 제목"
         ref={boardTitleRef}
       />
-      <CKEditor
-        editor={ClassicEditor}
-        data={data}
-        onChange={onEditorChange}
-      />
+      <div id="editor"></div>
       <Button style={buttonStyle} onClick={writeBoard} className="d-block w-100">
         저장하기
       </Button>
