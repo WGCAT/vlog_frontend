@@ -28,12 +28,8 @@ const MypageForm = () => {
         <Form.Label>new password check</Form.Label>
         <Form.Control type="password" placeholder="Enter New Password Check" />
       </Form.Group>
-      <Button variant="primary"  block style={marginBottom}>
-      회원정보 수정
-      </Button>
-      <Button variant="primary" block>
-      회원 탈퇴
-      </Button>
+      <Button variant="primary"  className="d-block w-100" style={marginBottom}>회원정보 수정</Button>
+      <Button variant="primary" className="d-block w-100">회원 탈퇴</Button>
       </div>
     </>
   );
