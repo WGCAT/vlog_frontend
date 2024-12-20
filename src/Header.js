@@ -3,7 +3,8 @@ import { Navbar, Button, Image } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import $ from "jquery";
-import {} from "jquery.cookie";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
@@ -16,15 +17,17 @@ const Header = () => {
     } else {
       setButtonDisplay("none");
     }
-  }, []); // componentDidMount equivalent
+  }, []);
 
   const logout = () => {
     axios.get("http://localhost:8080/member/logout", { headers }).then(returnData => {
       if (returnData.data.message) {
         $.removeCookie("login_id");
-        alert("로그아웃 되었습니다!");
+        toast.success("로그아웃 되었습니다!");
         window.location.href = "/";
       }
+    }).catch(err => {
+      toast.error("로그아웃 중 오류가 발생했습니다.");
     });
   };
 
@@ -55,6 +58,7 @@ const Header = () => {
         </Navbar.Collapse>
       </Navbar>
       <Image src="./img/main.png" fluid />
+      <ToastContainer />
     </div>
   );
 };

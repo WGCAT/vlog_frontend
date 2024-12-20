@@ -39,13 +39,14 @@ const BoardForm = () => {
       headers,
       _id: $.cookie("login_id"),
     };
+
     axios
       .post("http://localhost:8080/board/getBoardList", send_param)
       .then((returnData) => {
-        let boardList;
-        if (returnData.data.list.length > 0) {
+        // 데이터 검증 추가
+        if (returnData?.data?.list?.length > 0) {
           const boards = returnData.data.list;
-          boardList = boards.map((item) => (
+          const boardRows = boards.map((item) => (
             <BoardRow
               key={item._id}
               _id={item._id}
@@ -53,18 +54,24 @@ const BoardForm = () => {
               title={item.title}
             />
           ));
-          setBoardList(boardList);
+          setBoardList(boardRows);
         } else {
-          boardList = (
+          // 게시글이 없을 때
+          setBoardList(
             <tr>
               <td colSpan="2">작성한 게시글이 존재하지 않습니다.</td>
             </tr>
           );
-          setBoardList(boardList);
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Error fetching board list:", err);
+        // 에러 발생 시 기본값 설정
+        setBoardList(
+          <tr>
+            <td colSpan="2">게시글을 불러오는 중 문제가 발생했습니다.</td>
+          </tr>
+        );
       });
   };
 

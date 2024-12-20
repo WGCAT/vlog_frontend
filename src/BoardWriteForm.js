@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import $ from "jquery";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
@@ -23,8 +26,7 @@ const BoardWriteForm = ({ location }) => {
     const loadEditor = async () => {
       const ClassicEditor = await window.ClassicEditor.create(document.querySelector("#editor"));
       editorRef.current = ClassicEditor;
-
-      // 이전 데이터 로드
+      
       if (location?.state?.content) {
         ClassicEditor.setData(location.state.content);
       }
@@ -36,7 +38,6 @@ const BoardWriteForm = ({ location }) => {
 
     loadEditor();
 
-    // 컴포넌트 언마운트 시 에디터 파괴
     return () => {
       if (editorRef.current) {
         editorRef.current.destroy();
@@ -49,13 +50,13 @@ const BoardWriteForm = ({ location }) => {
     const boardContent = data;
 
     if (!boardTitle) {
-      alert("글 제목을 입력 해주세요.");
+      toast.error("글 제목을 입력 해주세요.");
       boardTitleRef.current.focus();
       return;
     }
 
     if (!boardContent) {
-      alert("글 내용을 입력 해주세요.");
+      toast.error("글 내용을 입력 해주세요.");
       return;
     }
 
@@ -80,18 +81,23 @@ const BoardWriteForm = ({ location }) => {
       };
     }
 
+    console.log("Request URL:", url);
+    console.log("Request Data:", send_param);
+
     axios
       .post(url, send_param)
       .then((returnData) => {
+        console.log("Server Response:", returnData.data);
         if (returnData.data.message) {
-          alert(returnData.data.message);
+          toast.success(returnData.data.message);
           window.location.href = "/";
         } else {
-          alert("글쓰기 실패");
+          toast.error("글쓰기 실패");
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log("Error:", err);
+        toast.error("서버와의 연결에 실패했습니다.");
       });
   };
 
@@ -112,6 +118,7 @@ const BoardWriteForm = ({ location }) => {
       <Button style={buttonStyle} onClick={writeBoard} className="d-block w-100">
         저장하기
       </Button>
+      <ToastContainer />
     </div>
   );
 };
