@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Pagination } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import $ from "jquery";
@@ -32,7 +32,9 @@ class BoardRow extends Component {
 // BoardForm 컴포넌트
 class BoardForm extends Component {
   state = {
-    boardList: [],
+    boardList: [], // 전체 게시글 리스트
+    currentPage: 1, // 현재 페이지
+    postsPerPage: 10, // 한 페이지당 게시글 수
   };
 
   componentDidMount() {
@@ -52,24 +54,11 @@ class BoardForm extends Component {
         console.log("Board List Data:", returnData.data);
 
         if (returnData.data.list && returnData.data.list.length > 0) {
-          const boards = returnData.data.list;
-          const boardList = boards.map((item) => (
-            <BoardRow
-              key={item._id} // 고유 키로 _id 사용
-              _id={item._id}
-              createdAt={item.createdAt}
-              title={item.title}
-            />
-          ));
-          this.setState({ boardList });
+          this.setState({ boardList: returnData.data.list });
         } else {
           // 게시글이 없는 경우
           this.setState({
-            boardList: (
-              <tr>
-                <td colSpan="2">작성한 게시글이 존재하지 않습니다.</td>
-              </tr>
-            ),
+            boardList: [],
           });
         }
       })
@@ -77,19 +66,56 @@ class BoardForm extends Component {
         console.error("Error fetching board list:", err);
         // 에러 처리
         this.setState({
-          boardList: (
-            <tr>
-              <td colSpan="2">게시글을 불러오는 중 문제가 발생했습니다.</td>
-            </tr>
-          ),
+          boardList: [],
         });
       });
   };
 
+  // 현재 페이지를 설정
+  handlePageChange = (pageNumber) => {
+    this.setState({ currentPage: pageNumber });
+  };
+
   render() {
+    const { boardList, currentPage, postsPerPage } = this.state;
+
+    // 현재 페이지에 표시할 게시글 계산
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = boardList.slice(indexOfFirstPost, indexOfLastPost);
+
     const divStyle = {
       margin: 50,
     };
+
+    // 페이지 버튼 생성
+    const totalPages = Math.ceil(boardList.length / postsPerPage);
+    const paginationItems = [];
+
+    // 게시글이 10개 이하일 경우, 페이지네이션은 1개만 표시
+    if (boardList.length <= postsPerPage) {
+      paginationItems.push(
+        <Pagination.Item
+          key={1}
+          active={currentPage === 1}
+          onClick={() => this.handlePageChange(1)}
+        >
+          1
+        </Pagination.Item>
+      );
+    } else {
+      for (let i = 1; i <= totalPages; i++) {
+        paginationItems.push(
+          <Pagination.Item
+            key={i}
+            active={i === currentPage}
+            onClick={() => this.handlePageChange(i)}
+          >
+            {i}
+          </Pagination.Item>
+        );
+      }
+    }
 
     return (
       <div>
@@ -101,8 +127,28 @@ class BoardForm extends Component {
                 <th>글 제목</th>
               </tr>
             </thead>
-            <tbody>{this.state.boardList}</tbody>
+            <tbody>
+              {currentPosts.length > 0 ? (
+                currentPosts.map((item) => (
+                  <BoardRow
+                    key={item._id} // 고유 키로 _id 사용
+                    _id={item._id}
+                    createdAt={item.createdAt}
+                    title={item.title}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="2">작성한 게시글이 존재하지 않습니다.</td>
+                </tr>
+              )}
+            </tbody>
           </Table>
+          {boardList.length > 0 && (
+            <Pagination className="justify-content-center">
+              {paginationItems}
+            </Pagination>
+          )}
         </div>
       </div>
     );
