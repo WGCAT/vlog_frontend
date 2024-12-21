@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Form, Button, Toast } from "react-bootstrap";
 import axios from "axios";
 import $ from "jquery";
-import {} from "jquery.cookie";
+import "jquery.cookie";
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
 const MypageForm = () => {
-  const [email, setEmail] = useState($.cookie("login_email"));
+  const [email] = useState($.cookie("login_email"));
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordCheck, setNewPasswordCheck] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    // 사용자의 정보 로드 (예시: 이메일과 이름을 서버에서 가져오는 로직)
-    // axios.get("http://localhost:8080/member/getInfo", { headers }).then((response) => {
-    //   setName(response.data.name);
-    // });
-  }, []);
 
   const handleUpdate = () => {
     if (newPassword !== newPasswordCheck) {
@@ -38,12 +31,22 @@ const MypageForm = () => {
     axios
       .post("http://localhost:8080/member/updateInfo", updatedInfo, { headers })
       .then((response) => {
-        setMessage("회원정보가 성공적으로 수정되었습니다.");
-        setError(""); // 에러 메시지 초기화
+        if (response.data.message === "현재 비밀번호가 일치하지 않습니다.") {
+          setError(response.data.message);
+          setMessage("");
+          return;
+        }
+
+        setMessage(response.data.message);
+        setError(""); 
+
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 2000);
       })
       .catch((error) => {
         setError("회원정보 수정 중 오류가 발생했습니다.");
-        setMessage(""); // 성공 메시지 초기화
+        setMessage("");
       });
   };
 
@@ -52,8 +55,7 @@ const MypageForm = () => {
       axios
         .post("http://localhost:8080/member/deleteAccount", { email }, { headers })
         .then((response) => {
-          setMessage("회원 탈퇴가 완료되었습니다.");
-          // 로그아웃 후 리다이렉트
+          setMessage(response.data.message);
           $.removeCookie("login_id");
           window.location.href = "/";
         })
@@ -65,18 +67,20 @@ const MypageForm = () => {
 
   const formStyle = { 
     margin: "50px auto",
-    maxWidth: "300px", // 폼 최대 너비 설정
+    maxWidth: "300px",
   };
 
   return (
     <>
       <div style={formStyle}>
-        {message && <Toast onClose={() => setMessage("")} show={message !== ""} delay={3000} autohide>
+        {/* Toast 고정 위치 설정 */}
+        {message && <Toast onClose={() => setMessage("")} show={message !== ""} delay={3000} autohide style={{ position: "fixed", bottom: "20px", left: "50%", transform: "translateX(-50%)", zIndex: 1050 }}>
           <Toast.Body>{message}</Toast.Body>
         </Toast>}
-        {error && <Toast onClose={() => setError("")} show={error !== ""} delay={3000} autohide>
+        {error && <Toast onClose={() => setError("")} show={error !== ""} delay={3000} autohide style={{ position: "fixed", bottom: "20px", left: "50%", transform: "translateX(-50%)", zIndex: 1050 }}>
           <Toast.Body>{error}</Toast.Body>
         </Toast>}
+        
         <Form.Group controlId="formBasicEmail">
           <Form.Label>email</Form.Label>
           <Form.Control
