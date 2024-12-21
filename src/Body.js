@@ -26,12 +26,8 @@ const Body = () => {
         <Route path="/mypage" element={<MypageForm />} />
         <Route path="/boardWrite" element={<BoardWriteForm />} />
         <Route path="/board/detail" element={<BoardDetail />} />
-        <Route
-          path="/"
-          element={isLoggedIn ? <BoardForm /> : <LoginForm />}
-        />
+        <Route path="/" element={isLoggedIn ? <BoardForm /> : <LoginForm />} />
         <Route path="/boardUpdate" element={<BoardUpdateForm />} />
-
       </Routes>
     </div>
   );
