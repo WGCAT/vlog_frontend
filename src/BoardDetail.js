@@ -18,10 +18,12 @@ const BoardDetail = () => {
     }
   }, [location, navigate]);
 
+  // 글 삭제
   const deleteBoard = (_id) => {
     const send_param = { _id };
 
     if (window.confirm("정말 삭제 하시겠습니까?")) {
+      // axios
       axios
         .post("http://localhost:8080/board/delete", send_param)
         .then(() => {
@@ -35,9 +37,11 @@ const BoardDetail = () => {
     }
   };
 
+  // 글 상세
   const getDetail = () => {
     const send_param = { _id: location.state._id };
 
+    // axios
     axios
       .post("http://localhost:8080/board/detail", send_param)
       .then((returnData) => {
@@ -63,7 +67,8 @@ const BoardDetail = () => {
                   state={{
                     title: boardData.title,
                     content: boardData.content,
-                    _id: location.state._id,  // 해당 글의 ID를 전달
+                    // 해당 글의 ID 전달
+                    _id: location.state._id,  
                   }}
                 >
                   <Button style={{ width: "100px" }}>

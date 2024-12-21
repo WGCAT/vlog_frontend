@@ -9,40 +9,47 @@ axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
 const BoardUpdateForm = () => {
-  const [data, setData] = useState(""); // CKEditor에 들어갈 내용
+  // CK에디터에 들어갈 내용
+  const [data, setData] = useState(""); 
   const boardTitleRef = useRef();
   const editorRef = useRef();
-  const location = useLocation(); // location 가져옴
+  // location 가져옴
+  const location = useLocation(); 
 
   useEffect(() => {
     // location.state가 전달되었는지 확인
-    console.log("Location State:", location?.state); // undefined 방지 위해 optional chaining 사용
+    // undefined 방지 위해 optional chaining 사용
+    console.log("Location State:", location?.state); 
 
     if (location?.state?.title) {
-      boardTitleRef.current.value = location.state.title; // 제목 설정
+      // 제목 설정
+      boardTitleRef.current.value = location.state.title; 
     }
     if (location?.state?.content) {
-      setData(location.state.content); // 내용 설정
+      // 내용 설정
+      setData(location.state.content); 
     }
 
-    // CKEditor 초기화
+    // CK에디터 초기화
     const loadEditor = async () => {
       const ClassicEditor = await window.ClassicEditor.create(document.querySelector("#editor"));
       editorRef.current = ClassicEditor;
 
       if (location?.state?.content) {
-        ClassicEditor.setData(location.state.content); // 초기 내용 설정
+        // 초기 내용 설정
+        ClassicEditor.setData(location.state.content); 
       }
 
       ClassicEditor.model.document.on("change:data", () => {
-        setData(ClassicEditor.getData()); // CKEditor 내용이 변경되면 상태 업데이트
+        // CK에디터 내용 변경 시 상태 업데이트
+        setData(ClassicEditor.getData()); 
       });
     };
 
     loadEditor();
 
     return () => {
-      // 컴포넌트 언마운트 시 CKEditor 제거
+      // 컴포넌트 언마운트 시 CK에디터 제거
       if (editorRef.current) {
         editorRef.current.destroy(); 
       }
@@ -50,6 +57,7 @@ const BoardUpdateForm = () => {
     // location 변화 시 재렌더링
   }, [location]); 
 
+  // 글 수정
   const updateBoard = () => {
     const boardTitle = boardTitleRef.current.value;
     const boardContent = data;
@@ -68,7 +76,6 @@ const BoardUpdateForm = () => {
     let url;
     let send_param;
 
-    // 글 수정 로직
     if (location?.state?._id) {
       url = "http://localhost:8080/board/update";
       send_param = {
@@ -88,7 +95,8 @@ const BoardUpdateForm = () => {
         console.log("Server Response:", returnData.data);
         if (returnData.data.message) {
           toast.success(returnData.data.message);
-          window.location.href = "/"; // 글쓰기 후 목록으로 리디렉션
+          // 글쓰기 후 목록으로 리디렉션
+          window.location.href = "/"; 
         } else {
           toast.error("글쓰기 실패");
         }
@@ -114,7 +122,7 @@ const BoardUpdateForm = () => {
         ref={boardTitleRef}
       />
       <div id="editor"></div>
-      
+
       <div style={buttonContainerStyle}>
         <Button style={buttonStyle} onClick={updateBoard}>
           수정하기

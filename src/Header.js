@@ -19,6 +19,7 @@ const Header = () => {
     }
   }, []);
 
+  // 로그아웃
   const logout = () => {
     axios.get("http://localhost:8080/member/logout", { headers }).then(returnData => {
       if (returnData.data.message) {

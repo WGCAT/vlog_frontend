@@ -14,7 +14,7 @@ const BoardWriteForm = () => {
   const editorRef = useRef();
 
   useEffect(() => {
-    // CKEditor 초기화
+    // CK에디터 초기화
     const loadEditor = async () => {
       const ClassicEditor = await window.ClassicEditor.create(document.querySelector("#editor"));
       editorRef.current = ClassicEditor;
@@ -33,6 +33,7 @@ const BoardWriteForm = () => {
     };
   }, []);
 
+  // 글쓰기
   const writeBoard = () => {
     const boardTitle = boardTitleRef.current.value;
     const boardContent = data;
@@ -57,6 +58,7 @@ const BoardWriteForm = () => {
 
     console.log("Request Data:", send_param);
 
+    // axios
     axios
       .post("http://localhost:8080/board/write", send_param)
       .then((returnData) => {
@@ -78,10 +80,10 @@ const BoardWriteForm = () => {
   const titleStyle = { marginBottom: 5 };
   const buttonContainerStyle = {
     display: "flex",
-    justifyContent: "flex-end", // 오른쪽 정렬
+    justifyContent: "flex-end",
     marginTop: 10,
   };
-  const buttonStyle = { width: "100px" }; // 버튼 너비 100px
+  const buttonStyle = { width: "100px" };
 
   return (
     <div style={divStyle} className="App">

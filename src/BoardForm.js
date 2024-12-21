@@ -8,7 +8,6 @@ import {} from "jquery.cookie";
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
-// BoardRow 컴포넌트
 class BoardRow extends Component {
   render() {
     const { _id, createdAt, title } = this.props;
@@ -32,9 +31,10 @@ class BoardRow extends Component {
 // BoardForm 컴포넌트
 class BoardForm extends Component {
   state = {
-    boardList: [], // 전체 게시글 리스트
-    currentPage: 1, // 현재 페이지
-    postsPerPage: 10, // 한 페이지당 게시글 수
+    // 전체 게시글 리스트
+    boardList: [], 
+    currentPage: 1,
+    postsPerPage: 10,
   };
 
   componentDidMount() {
@@ -56,7 +56,7 @@ class BoardForm extends Component {
         if (returnData.data.list && returnData.data.list.length > 0) {
           this.setState({ boardList: returnData.data.list });
         } else {
-          // 게시글이 없는 경우
+          // 게시글 없는 경우
           this.setState({
             boardList: [],
           });
@@ -64,29 +64,26 @@ class BoardForm extends Component {
       })
       .catch((err) => {
         console.error("Error fetching board list:", err);
-        // 에러 처리
         this.setState({
           boardList: [],
         });
       });
   };
 
-  // 현재 페이지를 설정
+  // 현재 페이지 설정
   handlePageChange = (pageNumber) => {
     this.setState({ currentPage: pageNumber });
   };
 
   render() {
     const { boardList, currentPage, postsPerPage } = this.state;
-
-    // 현재 페이지에 표시할 게시글 계산
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = boardList.slice(indexOfFirstPost, indexOfLastPost);
 
     const divStyle = {
       margin: 50,
-      textAlign: "center", // 테이블을 가운데 정렬
+      textAlign: "center",
     };
 
     // 페이지 버튼 생성
@@ -132,7 +129,8 @@ class BoardForm extends Component {
               {currentPosts.length > 0 ? (
                 currentPosts.map((item) => (
                   <BoardRow
-                    key={item._id} // 고유 키로 _id 사용
+                    // 고유 키 : _id
+                    key={item._id} 
                     _id={item._id}
                     createdAt={item.createdAt}
                     title={item.title}
