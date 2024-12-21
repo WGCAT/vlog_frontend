@@ -13,23 +13,21 @@ const Body = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // 로그인 여부를 확인하고 상태를 업데이트
+    // 로그인 여부 확인 후 상태 업데이트
     const loginId = $.cookie("login_id");
-    setIsLoggedIn(!!loginId); // 로그인 상태에 따라 true 또는 false 설정
-  }, []); // 빈 배열을 넣어 한 번만 실행되도록 설정
+    // 로그인 상태에 따라 true 또는 false, 빈 배열을 넣어 한 번만 실행
+    setIsLoggedIn(!!loginId); 
+  }, []);
 
+  // 라우터 설정
   return (
     <div>
       <Routes>
         <Route path="/mypage" element={<MypageForm />} />
         <Route path="/boardWrite" element={<BoardWriteForm />} />
         <Route path="/board/detail" element={<BoardDetail />} />
-        <Route
-          path="/"
-          element={isLoggedIn ? <BoardForm /> : <LoginForm />}
-        />
+        <Route path="/" element={isLoggedIn ? <BoardForm /> : <LoginForm />} />
         <Route path="/boardUpdate" element={<BoardUpdateForm />} />
-
       </Routes>
     </div>
   );
