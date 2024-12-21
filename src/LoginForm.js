@@ -84,22 +84,29 @@ class LoginForm extends Component {
     };
 
     axios.post("http://localhost:8080/member/login", send_param).then((returnData) => {
-        if (returnData.data.message) {
-          $.cookie("login_id", returnData.data._id, { expires: 1 });
-          $.cookie("login_email", returnData.data.email, { expires: 1 });
-          toast.success(returnData.data.message);
-          window.location.reload();
-        } else {
-          toast.error(returnData.data.message);
-        }
-      }).catch((err) => {
-        console.log(err);
-        toast.error("서버와의 연결에 실패했습니다.");
-      });
+      if (returnData.data.message === "로그인 되었습니다!") { // 성공 메시지 체크
+        $.cookie("login_id", returnData.data._id, { expires: 1 });
+        $.cookie("login_email", returnData.data.email, { expires: 1 });
+        toast.success(returnData.data.message);
+        // 로그인 성공 시 새로고침
+        window.location.reload();
+      } else {
+        toast.error(returnData.data.message);
+        // 로그인 실패 시 입력창 초기화
+        this.loginEmail.value = "";
+        this.loginPw.value = "";
+      }
+    }).catch((err) => {
+      console.log(err);
+      toast.error("서버와의 연결에 실패했습니다.");
+    });
   };
 
   render() {
-    const formStyle = { margin: 50 };
+    const formStyle = { 
+      margin: "50px auto",
+      maxWidth: "300px",
+    };
     const buttonStyle = { marginTop: 10 };
 
     return (
