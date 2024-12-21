@@ -52,12 +52,17 @@ const Header = () => {
               글쓰기
             </Button>
           </NavLink>
+          <NavLink to="/myPage">
+            <Button style={buttonStyle} variant="primary">
+              내 정보
+            </Button>
+          </NavLink>
           <Button style={buttonStyle} onClick={logout} variant="primary">
             로그아웃
           </Button>
         </Navbar.Collapse>
       </Navbar>
-      <Image src="./img/banner.png" fluid />
+      <Image src="./img/keyboard.jpg" style={{ width: "100%", height: "300px", objectFit: "cover" }} />
       <ToastContainer />
     </div>
   );
