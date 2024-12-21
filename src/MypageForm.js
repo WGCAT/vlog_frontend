@@ -14,7 +14,8 @@ const MypageForm = () => {
   const [newPasswordCheck, setNewPasswordCheck] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
+  
+  // 회원정보 수정
   const handleUpdate = () => {
     if (newPassword !== newPasswordCheck) {
       setError("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
@@ -37,19 +38,7 @@ const MypageForm = () => {
           return;
         }
 
-        setMessage(response.data.message);
-        setError(""); 
-
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 2000);
-      })
-      .catch((error) => {
-        setError("회원정보 수정 중 오류가 발생했습니다.");
-        setMessage("");
-      });
-  };
-
+        setMessage(res퇴
   const handleDelete = () => {
     if (window.confirm("정말로 회원탈퇴 하시겠습니까?")) {
       axios
@@ -73,7 +62,6 @@ const MypageForm = () => {
   return (
     <>
       <div style={formStyle}>
-        {/* Toast 고정 위치 설정 */}
         {message && <Toast onClose={() => setMessage("")} show={message !== ""} delay={3000} autohide style={{ position: "fixed", bottom: "20px", left: "50%", transform: "translateX(-50%)", zIndex: 1050 }}>
           <Toast.Body>{message}</Toast.Body>
         </Toast>}
