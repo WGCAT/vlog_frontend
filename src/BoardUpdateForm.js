@@ -2,9 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { useLocation } from "react-router-dom"; // useLocation 훅 임포트
+import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import $ from "jquery";
 
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
@@ -13,7 +12,7 @@ const BoardUpdateForm = () => {
   const [data, setData] = useState(""); // CKEditor에 들어갈 내용
   const boardTitleRef = useRef();
   const editorRef = useRef();
-  const location = useLocation(); // useLocation을 사용하여 location 가져오기
+  const location = useLocation(); // location 가져옴
 
   useEffect(() => {
     // location.state가 전달되었는지 확인
@@ -43,13 +42,15 @@ const BoardUpdateForm = () => {
     loadEditor();
 
     return () => {
+      // 컴포넌트 언마운트 시 CKEditor 제거
       if (editorRef.current) {
-        editorRef.current.destroy(); // 컴포넌트 언마운트 시 CKEditor 제거
+        editorRef.current.destroy(); 
       }
     };
-  }, [location]); // location 변화 시 재렌더링
+    // location 변화 시 재렌더링
+  }, [location]); 
 
-  const writeBoard = () => {
+  const updateBoard = () => {
     const boardTitle = boardTitleRef.current.value;
     const boardContent = data;
 
@@ -69,19 +70,10 @@ const BoardUpdateForm = () => {
 
     // 글 수정 로직
     if (location?.state?._id) {
-      url = "http://localhost:8080/board/update"; // 글 수정
+      url = "http://localhost:8080/board/update";
       send_param = {
         headers,
-        _id: location.state._id, // 수정할 글의 ID
-        title: boardTitle,
-        content: boardContent,
-      };
-    } else {
-      // 글쓰기
-      url = "http://localhost:8080/board/write";
-      send_param = {
-        headers,
-        _id: $.cookie("login_id"),
+        _id: location.state._id,
         title: boardTitle,
         content: boardContent,
       };
@@ -109,7 +101,8 @@ const BoardUpdateForm = () => {
 
   const divStyle = { margin: 50 };
   const titleStyle = { marginBottom: 5 };
-  const buttonStyle = { marginTop: 5 };
+  const buttonContainerStyle = { display: "flex", justifyContent: "flex-end", marginTop: 5 };
+  const buttonStyle = { width: "100px" };
 
   return (
     <div style={divStyle} className="App">
@@ -121,9 +114,13 @@ const BoardUpdateForm = () => {
         ref={boardTitleRef}
       />
       <div id="editor"></div>
-      <Button style={buttonStyle} onClick={writeBoard} className="d-block w-100">
-        수정하기
-      </Button>
+      
+      <div style={buttonContainerStyle}>
+        <Button style={buttonStyle} onClick={updateBoard}>
+          수정하기
+        </Button>
+      </div>
+
       <ToastContainer />
     </div>
   );

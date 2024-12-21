@@ -1,4 +1,3 @@
-// BoardDetail.js
 import React, { useState, useEffect } from "react";
 import { Table, Button } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
@@ -58,7 +57,7 @@ const BoardDetail = () => {
                   </tr>
                 </tbody>
               </Table>
-              <div>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
                 <NavLink
                   to="/boardUpdate"
                   state={{
@@ -67,13 +66,13 @@ const BoardDetail = () => {
                     _id: location.state._id,  // 해당 글의 ID를 전달
                   }}
                 >
-                  <Button className="d-block w-100" style={{ marginBottom: 5 }}>
+                  <Button style={{ width: "100px" }}>
                     글 수정
                   </Button>
                 </NavLink>
 
                 <Button
-                  className="d-block w-100"
+                  style={{ width: "100px" }}
                   onClick={() => deleteBoard(location.state._id)}
                 >
                   글 삭제

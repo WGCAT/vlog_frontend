@@ -63,7 +63,7 @@ const BoardWriteForm = () => {
         console.log("Server Response:", returnData.data);
         if (returnData.data.message) {
           toast.success(returnData.data.message);
-          window.location.href = "/"; // 글쓰기 후 목록으로 리디렉션
+          window.location.href = "/"; // 글쓰기 후 목록으로 이동
         } else {
           toast.error("글쓰기 실패");
         }
@@ -76,7 +76,12 @@ const BoardWriteForm = () => {
 
   const divStyle = { margin: 50 };
   const titleStyle = { marginBottom: 5 };
-  const buttonStyle = { marginTop: 5 };
+  const buttonContainerStyle = {
+    display: "flex",
+    justifyContent: "flex-end", // 오른쪽 정렬
+    marginTop: 10,
+  };
+  const buttonStyle = { width: "100px" }; // 버튼 너비 100px
 
   return (
     <div style={divStyle} className="App">
@@ -88,9 +93,11 @@ const BoardWriteForm = () => {
         ref={boardTitleRef}
       />
       <div id="editor"></div>
-      <Button style={buttonStyle} onClick={writeBoard} className="d-block w-100">
-        저장하기
-      </Button>
+      <div style={buttonContainerStyle}>
+        <Button style={buttonStyle} onClick={writeBoard}>
+          저장하기
+        </Button>
+      </div>
       <ToastContainer />
     </div>
   );

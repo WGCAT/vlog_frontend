@@ -146,7 +146,7 @@ class BoardForm extends Component {
             </tbody>
           </Table>
           {boardList.length > 0 && (
-            <Pagination className="justify-content-center">
+            <Pagination className="justify-content-center" style={{ marginTop: "50px" }}>
               {paginationItems}
             </Pagination>
           )}
