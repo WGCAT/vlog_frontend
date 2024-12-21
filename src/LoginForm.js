@@ -127,8 +127,6 @@ class LoginForm extends Component {
             로그인
           </Button>
         </Form.Group>
-
-        {/* ToastContainer를 추가하여 알림을 표시할 위치를 지정 */}
         <ToastContainer />
       </Form>
     );

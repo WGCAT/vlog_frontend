@@ -1,40 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React, { Component } from "react";
 import { Table } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import $ from "jquery";
+import {} from "jquery.cookie";
+
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
-const BoardRow = ({ _id, createdAt, title }) => {
-  return (
-    <tr>
-      <td>
-        <NavLink
-          to={{ pathname: "/board/detail", state: { _id } }}
-        >
-          {createdAt.substring(0, 10)}
-        </NavLink>
-      </td>
-      <td>
-        <NavLink
-          to={{ pathname: "/board/detail", state: { _id } }}
-        >
-          {title}
-        </NavLink>
-      </td>
-    </tr>
-  );
-};
+// BoardRow 컴포넌트
+class BoardRow extends Component {
+  render() {
+    const { _id, createdAt, title } = this.props;
+    return (
+      <tr>
+        <td>
+          <NavLink to="/board/detail" state={{ _id }}>
+            {createdAt.substring(0, 10)}
+          </NavLink>
+        </td>
+        <td>
+          <NavLink to="/board/detail" state={{ _id }}>
+            {title}
+          </NavLink>
+        </td>
+      </tr>
+    );
+  }
+}
 
-const BoardForm = () => {
-  const [boardList, setBoardList] = useState([]);
+// BoardForm 컴포넌트
+class BoardForm extends Component {
+  state = {
+    boardList: [],
+  };
 
-  useEffect(() => {
-    getBoardList();
-  }, []);
+  componentDidMount() {
+    this.getBoardList();
+  }
 
-  const getBoardList = () => {
+  getBoardList = () => {
     const send_param = {
       headers,
       _id: $.cookie("login_id"),
@@ -43,57 +48,65 @@ const BoardForm = () => {
     axios
       .post("http://localhost:8080/board/getBoardList", send_param)
       .then((returnData) => {
-        // 데이터 검증 추가
-        if (returnData?.data?.list?.length > 0) {
+        // 서버에서 데이터 확인
+        console.log("Board List Data:", returnData.data);
+
+        if (returnData.data.list && returnData.data.list.length > 0) {
           const boards = returnData.data.list;
-          const boardRows = boards.map((item) => (
+          const boardList = boards.map((item) => (
             <BoardRow
-              key={item._id}
+              key={item._id} // 고유 키로 _id 사용
               _id={item._id}
               createdAt={item.createdAt}
               title={item.title}
             />
           ));
-          setBoardList(boardRows);
+          this.setState({ boardList });
         } else {
-          // 게시글이 없을 때
-          setBoardList(
-            <tr>
-              <td colSpan="2">작성한 게시글이 존재하지 않습니다.</td>
-            </tr>
-          );
+          // 게시글이 없는 경우
+          this.setState({
+            boardList: (
+              <tr>
+                <td colSpan="2">작성한 게시글이 존재하지 않습니다.</td>
+              </tr>
+            ),
+          });
         }
       })
       .catch((err) => {
-        console.log("Error fetching board list:", err);
-        // 에러 발생 시 기본값 설정
-        setBoardList(
-          <tr>
-            <td colSpan="2">게시글을 불러오는 중 문제가 발생했습니다.</td>
-          </tr>
-        );
+        console.error("Error fetching board list:", err);
+        // 에러 처리
+        this.setState({
+          boardList: (
+            <tr>
+              <td colSpan="2">게시글을 불러오는 중 문제가 발생했습니다.</td>
+            </tr>
+          ),
+        });
       });
   };
 
-  const divStyle = {
-    margin: 50,
-  };
+  render() {
+    const divStyle = {
+      margin: 50,
+    };
 
-  return (
-    <div>
-      <div style={divStyle}>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>날짜</th>
-              <th>글 제목</th>
-            </tr>
-          </thead>
-          <tbody>{boardList}</tbody>
-        </Table>
+    return (
+      <div>
+        <div style={divStyle}>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>날짜</th>
+                <th>글 제목</th>
+              </tr>
+            </thead>
+            <tbody>{this.state.boardList}</tbody>
+          </Table>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default BoardForm;

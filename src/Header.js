@@ -57,7 +57,7 @@ const Header = () => {
           </Button>
         </Navbar.Collapse>
       </Navbar>
-      <Image src="./img/main.png" fluid />
+      <Image src="./img/note.png" fluid />
       <ToastContainer />
     </div>
   );

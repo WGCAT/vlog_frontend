@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Table, Button } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 axios.defaults.withCredentials = true;
 const headers = { withCredentials: true };
 
@@ -18,19 +21,19 @@ const BoardDetail = () => {
     }
   }, [location, navigate]);
 
-  const deleteBoard = _id => {
+  const deleteBoard = (_id) => {
     const send_param = { headers, _id };
 
     if (window.confirm("정말 삭제 하시겠습니까?")) {
       axios
         .post("http://localhost:8080/board/delete", send_param)
-        .then(returnData => {
-          alert("게시글이 삭제 되었습니다.");
-          navigate("/");
+        .then(() => {
+          toast.success("게시글이 삭제되었습니다.");
+          setTimeout(() => navigate("/"), 2000); // 2초 후 홈으로 이동
         })
-        .catch(err => {
-          console.log(err);
-          alert("글 삭제 실패");
+        .catch((err) => {
+          console.error(err);
+          toast.error("글 삭제 실패. 다시 시도해주세요.");
         });
     }
   };
@@ -38,12 +41,12 @@ const BoardDetail = () => {
   const getDetail = () => {
     const send_param = {
       headers,
-      _id: location.state._id
+      _id: location.state._id,
     };
 
     axios
       .post("http://localhost:8080/board/detail", send_param)
-      .then(returnData => {
+      .then((returnData) => {
         if (returnData.data.board[0]) {
           const boardData = returnData.data.board[0];
           setBoard(
@@ -69,29 +72,38 @@ const BoardDetail = () => {
                       state: {
                         title: boardData.title,
                         content: boardData.content,
-                        _id: location.state._id
-                      }
+                        _id: location.state._id,
+                      },
                     })
                   }
                 >
                   글 수정
                 </Button>
-                <Button className="d-block w-100" onClick={() => deleteBoard(location.state._id)}>
+                <Button
+                  className="d-block w-100"
+                  onClick={() => deleteBoard(location.state._id)}
+                >
                   글 삭제
                 </Button>
               </div>
             </div>
           );
         } else {
-          alert("글 상세 조회 실패");
+          toast.error("글 상세 조회 실패.");
         }
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err) => {
+        console.error(err);
+        toast.error("서버와의 통신 중 문제가 발생했습니다.");
       });
   };
 
-  return <div style={{ margin: 50 }}>{board}</div>;
+  return (
+    <div style={{ margin: 50 }}>
+      <ToastContainer />
+      {board}
+    </div>
+  );
 };
 
 export default BoardDetail;
