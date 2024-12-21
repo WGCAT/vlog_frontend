@@ -14,12 +14,12 @@ class BoardRow extends Component {
     const { _id, createdAt, title } = this.props;
     return (
       <tr>
-        <td>
+        <td style={{ textAlign: "left" }}>
           <NavLink to="/board/detail" state={{ _id }}>
             {createdAt.substring(0, 10)}
           </NavLink>
         </td>
-        <td>
+        <td style={{ textAlign: "left" }}>
           <NavLink to="/board/detail" state={{ _id }}>
             {title}
           </NavLink>
@@ -86,6 +86,7 @@ class BoardForm extends Component {
 
     const divStyle = {
       margin: 50,
+      textAlign: "center", // 테이블을 가운데 정렬
     };
 
     // 페이지 버튼 생성
@@ -120,11 +121,11 @@ class BoardForm extends Component {
     return (
       <div>
         <div style={divStyle}>
-          <Table striped bordered hover>
+          <Table striped bordered hover style={{ width: "600px", margin: "0 auto" }}>
             <thead>
               <tr>
-                <th>날짜</th>
-                <th>글 제목</th>
+                <th style={{ width: "300px", textAlign: "left" }}>날짜</th>
+                <th style={{ width: "300px", textAlign: "left" }}>글 제목</th>
               </tr>
             </thead>
             <tbody>

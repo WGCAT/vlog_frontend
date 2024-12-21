@@ -5,6 +5,7 @@ import BoardForm from "./BoardForm";
 import BoardWriteForm from "./BoardWriteForm";
 import BoardDetail from "./BoardDetail";
 import MypageForm from "./MypageForm";
+import BoardUpdateForm from "./BoardUpdateForm";
 import $ from "jquery";
 import {} from "jquery.cookie";
 
@@ -27,6 +28,8 @@ const Body = () => {
           path="/"
           element={isLoggedIn ? <BoardForm /> : <LoginForm />}
         />
+        <Route path="/boardUpdate" element={<BoardUpdateForm />} />
+
       </Routes>
     </div>
   );
